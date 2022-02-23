@@ -1,9 +1,10 @@
 import HtmlWebpackPlugin from "html-webpack-plugin";
+import MiniCssExtractPlugin from 'mini-css-extract-plugin'
 import path from "path";
 export const common = {
   entry: "./src/index.tsx",
   output: {
-    filename: "bundle.js",
+    filename: "js/[name].[contenthash:10].js",
     path: path.resolve("./build"),
     publicPath: '/'
   },
@@ -24,7 +25,7 @@ export const common = {
       },
       {
         test: /\.styl$/,
-        use: ["style-loader", "css-loader", "stylus-loader"],
+        use: [MiniCssExtractPlugin.loader, "css-loader", "stylus-loader"],
       },
       {
         test: /\.(png|svg|jpe?g)$/i,
@@ -39,9 +40,24 @@ export const common = {
   resolve: {
     extensions: [".js", ".ts", ".tsx"],
   },
+  optimization: {
+    splitChunks: {
+      chunks: 'all'
+    }
+  },
   plugins: [
     new HtmlWebpackPlugin({
       template: "./src/index.html",
+      minify: {
+        //移除空格
+        collapseWhitespace: true,
+        //移除注释
+        removeComments: true
+      }
     }),
+
+    new MiniCssExtractPlugin({
+      filename: 'css/main.css'
+    })
   ],
 };
