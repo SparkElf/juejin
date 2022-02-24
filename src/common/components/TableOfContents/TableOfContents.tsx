@@ -59,8 +59,6 @@ const useHeadings = (getHeadingElements, getNestedHeadings) => {
     const [nestedHeadings, setNestedHeadings] = useState(null);
     useEffect(() => {
         const headingElements = getHeadingElements()
-
-        console.log(headingElements)
         const newNestedHeadings = getNestedHeadings(headingElements);//自己决定嵌套方式
         setNestedHeadings(newNestedHeadings);
     }, []);
@@ -72,16 +70,14 @@ export const getNestedHeadings = (headingElements) => {
         parent: null,
         children: []
     };
-    console.log(headingElements)
     let rank = {
         "H1": 1, "H2": 2, "H3": 3, "H4": 4, "H5": 5, "H6": 6,
     }
     let curNode: any = nestedHeadings
     headingElements.forEach((heading, index) => {
-        if (heading.id == "")
-            heading.id = "spark-toc-" + index//注意js默认引用，这个操作会直接修改dom元素
+        heading.id = "spark-toc-" + index//注意js默认引用，这个操作会直接修改dom元素
         const { innerText: title, id } = heading;
-        console.log(id)
+
         while (curNode.parent != null && rank[curNode.domNode.nodeName] >= rank[heading.nodeName])//回溯
             curNode = curNode.parent
         let node = {
@@ -92,6 +88,5 @@ export const getNestedHeadings = (headingElements) => {
         curNode.children.push(node)
         curNode = node
     });
-    console.log("nestedHeadings", nestedHeadings)
     return nestedHeadings
 };
